@@ -6,8 +6,20 @@
            {:main-opts ["-m clj.native-image core"
                         "--report-unsupported-elements-at-runtime"
                         "--initialize-at-build-time"
+                        "--initialize-at-run-time"
+                        "-H:ConfigurationFileDirectories=config"
+                        "-H:+TraceClassInitialization"
+                        "-H:+ReportExceptionStackTraces"
+                        "-H:+DeadlockWatchdogExitOnTimeout"
+                        "-H:DeadlockWatchdogInterval=100"
+                        "--allow-incomplete-classpath"
+                        "--no-fallback"
+                        "--no-server"
+                        "--verbose"
+                        "-J-Xmx8g"
+                        "-J-Xms8g"
                         ;; optional native image name override
-                        "-H:Name=example"]
+                        "-H:Name=service"]
             :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
             :extra-deps
             {clj.native-image
@@ -25,4 +37,6 @@
                                    software.amazon.awscdk/lambda {:mvn/version "1.20.0"}
                                    }}
            :test {:extra-paths ["test"]
-                  :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}}}}
+                  :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}}
+           :uberjar {:extra-deps {uberdeps/uberdeps {:mvn/version "1.0.2"}}
+                     :main-opts ["-m" "uberdeps.uberjar"]}}}
